@@ -11,7 +11,7 @@ on:
     branches:
       - main
     paths:
-      - 'plugin-flex-ts-template-v2/**'
+      - 'flex-template-leroy-demo/**'
       - 'serverless-functions/**'
   # Enable running this workflow manually from the Actions tab
   workflow_dispatch:
@@ -32,7 +32,7 @@ jobs:
       - name: Install packages
         run: |
           npm install --no-save eslint
-          cd plugin-flex-ts-template-v2
+          cd flex-template-leroy-demo
           npm install
           cd ../serverless-functions
           npm install
@@ -75,13 +75,13 @@ jobs:
         with:
           node-version: '16'
       - name: Install packages
-        working-directory: ./plugin-flex-ts-template-v2
+        working-directory: ./flex-template-leroy-demo
         run: npm install
       - name: Run tests
-        working-directory: ./plugin-flex-ts-template-v2
+        working-directory: ./flex-template-leroy-demo
         run: npm run test:ci
       - name: Publish test results
         uses: mikepenz/action-junit-report@v3
         if: always()
         with:
-          report_paths: './plugin-flex-ts-template-v2/test-results/junit.xml'
+          report_paths: './flex-template-leroy-demo/test-results/junit.xml'
