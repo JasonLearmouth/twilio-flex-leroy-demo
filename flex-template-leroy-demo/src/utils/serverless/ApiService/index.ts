@@ -29,13 +29,15 @@ export default abstract class ApiService {
     if (process.env?.FLEX_APP_SERVERLESS_FUNCTONS_DOMAIN)
       this.serverlessDomain = process.env?.FLEX_APP_SERVERLESS_FUNCTONS_DOMAIN;
 
-    if (custom_data?.serverless_functions_domain_leroy_demo_flex_leroy_demo) this.serverlessDomain = custom_data.serverless_functions_domain_leroy_demo_flex_leroy_demo;
+    if (custom_data?.serverless_functions_domain_leroy_demo)
+      this.serverlessDomain = custom_data.serverless_functions_domain_leroy_demo;
 
     if (custom_data?.serverless_functions_protocol) this.serverlessProtocol = custom_data.serverless_functions_protocol;
 
     if (custom_data?.serverless_functions_port) this.serverlessDomain += `:${custom_data.serverless_functions_port}`;
 
-    if (!this.serverlessDomain) console.error('serverless_functions_domain_leroy_demo_flex_leroy_demo is not set in flex config or env file');
+    if (!this.serverlessDomain)
+      console.error('serverless_functions_domain_leroy_demo_flex_leroy_demo is not set in flex config or env file');
   }
 
   protected buildBody(encodedParams: EncodedParams): string {
