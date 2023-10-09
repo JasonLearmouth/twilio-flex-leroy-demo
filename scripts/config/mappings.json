@@ -1,7 +1,7 @@
 {
   "SERVERLESS_DOMAIN": {
     "type": "serverless-domain",
-    "name": "custom-flex-extensions-serverless"
+    "name": "serverless-leroy-demo"
   },
   "SCHEDULE_MANAGER_DOMAIN": {
     "type": "serverless-domain",
