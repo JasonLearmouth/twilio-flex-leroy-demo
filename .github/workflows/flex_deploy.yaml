@@ -138,8 +138,10 @@ jobs:
       - name: install npm and build twilio-future-cc-widget
         run: |
           echo "### twilio-future-cc-widget configuration output"  >> $GITHUB_STEP_SUMMARY
+          ls -al web-app-examples/twilio-future-cc-widget
           npm run postinstall -- --packages=web-app-examples/twilio-future-cc-widget
           ls -al web-app-examples/twilio-future-cc-widget
+          ls -al web-app-examples/twilio-future-cc-widget/build
       # END FEATURE: twilio-future-cc-widget
       - name: deploy serverless
         working-directory: serverless-functions
