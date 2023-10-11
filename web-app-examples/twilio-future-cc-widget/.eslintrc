@@ -27,6 +27,7 @@
     "react/no-multi-comp": "off",
     "sonarjs/cognitive-complexity": "off",
     "sonarjs/no-small-switch": "off",
+    "react/jsx-max-depth": "off",
     "no-shadow": "off",
     "no-console": "warn",
     "no-duplicate-imports": "off",

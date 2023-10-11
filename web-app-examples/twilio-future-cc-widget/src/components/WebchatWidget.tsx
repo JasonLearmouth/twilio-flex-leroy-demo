@@ -34,7 +34,6 @@ export function WebchatWidget() {
     }, [dispatch]);
 
     const handleStart = () => {
-        console.log("Opening chat widget");
         dispatch(changeExpandedStatus({ expanded: true }));
         analytics.track("Start Demo", { activation: "Twilio Talks" });
     };
