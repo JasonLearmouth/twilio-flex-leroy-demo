@@ -69,7 +69,7 @@
     "scripts": {
         "postinstall": "npm run build",
         "start": "PORT=3002 react-app-rewired start",
-        "build": "env-cmd -f \".env.$ENVIRONMENT\" --fallback react-app-rewired build && npm run transfer-assets && echo HELLO",
+        "build": "env-cmd -f \".env.$ENVIRONMENT\" --fallback react-app-rewired build && npm run transfer-assets",
         "transfer-assets": "rm -rfv ../../serverless-functions/src/assets/features/future-cc/ && mkdir ../../serverless-functions/src/assets/features/future-cc/ && cp -R ./build/* ../../serverless-functions/src/assets/features/future-cc/"
     },
     "browserslist": [
