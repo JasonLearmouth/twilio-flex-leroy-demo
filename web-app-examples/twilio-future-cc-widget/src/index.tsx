@@ -11,7 +11,7 @@ import { initLogger } from "./logger";
 
 const getDomain = () => {
     if (window.location.hostname !== "localhost") {
-        return window.location.hostname;
+        return `https://${process.env.REACT_APP_SERVER_URL}`;
     }
     return process.env.REACT_APP_LOCAL_SERVER_URL;
 };
