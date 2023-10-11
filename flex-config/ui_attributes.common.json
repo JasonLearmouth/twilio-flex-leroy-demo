@@ -7,13 +7,13 @@
   "custom_data": {
     "features": {
       "message_drop_zone": {
-        "enabled": false
+        "enabled": true
       },
       "adaptive_cards": {
-        "enabled": false
+        "enabled": true
       },
       "panel2_multitabs": {
-        "enabled": false
+        "enabled": true
       }
     }
   }
