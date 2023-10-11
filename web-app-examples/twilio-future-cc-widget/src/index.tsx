@@ -16,6 +16,10 @@ const getDomain = () => {
         (document.currentScript as HTMLScriptElement).src
     ) {
         const uri = new URL((document.currentScript as HTMLScriptElement).src);
+        console.log("-----");
+        console.log(document.currentScript);
+        console.log(uri);
+        console.log("-----");
         return uri.origin;
     }
     return process.env.REACT_APP_LOCAL_SERVER_URL;

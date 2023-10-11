@@ -133,7 +133,7 @@ jobs:
           npm install --ignore-scripts
           npm run postinstall -- --packages=serverless-functions >> $GITHUB_STEP_SUMMARY
       # FEATURE: twilio-future-cc-widget
-      - name: install npm and build video-app-assets
+      - name: install npm and build twilio-future-cc-widget
         run: |
           echo "### twilio-future-cc-widget configuration output"  >> $GITHUB_STEP_SUMMARY
           npm run postinstall -- --packages=web-app-examples/twilio-future-cc-widget >> $GITHUB_STEP_SUMMARY
