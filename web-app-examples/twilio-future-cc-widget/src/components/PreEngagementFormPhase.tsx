@@ -83,7 +83,6 @@ export const PreEngagementFormPhase = () => {
                 setIsValidPhone(true);
             }
         } catch (error) {
-            console.log("Borked normalizing phone number", error);
             setIsValidPhone(false);
         } finally {
             setIsFetchingPhone(false);
@@ -99,12 +98,15 @@ export const PreEngagementFormPhase = () => {
             setIPInfo(data);
             dispatch(updatePreEngagementData({ ip_info: data }));
         };
-        getInfo().catch((err) => console.log(err));
-    }, []);
+        getInfo().catch((err) => {
+            return err;
+        });
+    }, [dispatch, phone]);
 
     useEffect(() => {
         validatePhone(phone || "");
-    }, [ip_info]);
+        // eslint-disable-next-line
+    }, [ip_info, phone]);
 
     const handleOnChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormPhone(e.target.value);
