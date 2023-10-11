@@ -131,7 +131,9 @@ jobs:
           echo " - Environment: ${{ env.ENVIRONMENT }}"  >> $GITHUB_STEP_SUMMARY
           echo "### Configuration output"  >> $GITHUB_STEP_SUMMARY
           npm install --ignore-scripts
+          echo "Completed npm install --ignore-scripts..."
           npm run postinstall -- --packages=serverless-functions >> $GITHUB_STEP_SUMMARY
+          echo "Completed npm run postinstall...."
       # FEATURE: twilio-future-cc-widget
       - name: install npm and build twilio-future-cc-widget
         run: |
