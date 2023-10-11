@@ -68,7 +68,7 @@ jobs:
       - name: setup node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: "16"
       - name: set github environment variables
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
@@ -118,7 +118,7 @@ jobs:
       - name: setup node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: "16"
       - name: set github environment variables
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
@@ -132,12 +132,17 @@ jobs:
           echo "### Configuration output"  >> $GITHUB_STEP_SUMMARY
           npm install --ignore-scripts
           npm run postinstall -- --packages=serverless-functions >> $GITHUB_STEP_SUMMARY
+      # FEATURE: twilio-future-cc-widget
+      - name: install npm and build video-app-assets
+        run: |
+          echo "### twilio-future-cc-widget configuration output"  >> $GITHUB_STEP_SUMMARY
+          npm run postinstall -- --packages=web-app-examples/twilio-future-cc-widget >> $GITHUB_STEP_SUMMARY
+      # END FEATURE: twilio-future-cc-widget
       - name: deploy serverless
         working-directory: serverless-functions
         run: |
           npm run install-serverless-plugin
           npm run deploy-env
-
 
   deploy-flex-config:
     if: |
@@ -156,7 +161,7 @@ jobs:
       - name: setup node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: "16"
       - name: set github environment variables
         env:
           SECRETS_CONTEXT: ${{ toJson(secrets) }}
@@ -189,7 +194,7 @@ jobs:
       - name: setup node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: "16"
 
       - name: install twilio cli
         run: npm install --ignore-scripts
