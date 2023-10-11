@@ -27,7 +27,7 @@ const createToken = (identity, context) => {
   return jwt;
 };
 
-export const handler = async function (context, event, callback) {
+exports.handler = async function (context, event, callback) {
   const response = new Twilio.Response();
 
   response.appendHeader('Access-Control-Allow-Origin', '*');
