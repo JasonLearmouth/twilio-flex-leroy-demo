@@ -10,17 +10,8 @@ import { ConfigState } from "./store/definitions";
 import { initLogger } from "./logger";
 
 const getDomain = () => {
-    if (
-        window.location.hostname !== "localhost" &&
-        document.currentScript &&
-        (document.currentScript as HTMLScriptElement).src
-    ) {
-        const uri = new URL((document.currentScript as HTMLScriptElement).src);
-        console.log("-----");
-        console.log(document.currentScript);
-        console.log(uri);
-        console.log("-----");
-        return uri.origin;
+    if (window.location.hostname !== "localhost") {
+        return window.location.hostname;
     }
     return process.env.REACT_APP_LOCAL_SERVER_URL;
 };
