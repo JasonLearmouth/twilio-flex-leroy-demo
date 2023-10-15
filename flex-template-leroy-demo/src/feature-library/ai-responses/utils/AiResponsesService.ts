@@ -56,7 +56,7 @@ class AiResponsesService extends ApiService {
           resolve(response);
         })
         .catch((error) => {
-          console.error(`Error fetching canned responses\r\n`, error);
+          console.error(`Error fetching Open AI Response\r\n`, error);
           reject(error);
         });
     });
