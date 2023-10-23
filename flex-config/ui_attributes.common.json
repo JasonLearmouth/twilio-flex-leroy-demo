@@ -16,7 +16,13 @@
         "enabled": true
       },
       "ai_responses": {
-        "enabled": false
+        "enabled": true
+      },
+      "video_invite_card": {
+        "enabled": true
+      },
+      "message_recommendation": {
+        "enabled": true
       }
     }
   }
