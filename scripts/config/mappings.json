@@ -36,5 +36,10 @@
   "TWILIO_FLEX_INTERNAL_CALL_WORKFLOW_SID": {
     "type": "tr-workflow",
     "name": "Internal Call"
+  },
+  "TWILIO_FLEX_WEBCHAT_ADDRESS_SID": {
+    "type": "conversations-address",
+    "name": "Flex Chat",
+    "fallback": "Chat"
   }
 }
