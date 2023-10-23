@@ -7,9 +7,6 @@ import { Button, Select, Option, Switch, Text, Flex as PasteFlex } from '@twilio
 import { ResponseEnhancerWrapper } from './ResponseEnhancerWrapperStyles';
 import AiResponsesService from '../../utils/AiResponsesService';
 import { personas } from '../../types/Personas';
-import SegmentService from '../../../panel2-multitabs/utils/SegmentService/SegmentService';
-import { KnownTraits } from '../../../panel2-multitabs/flex-hooks/strings/segmentTraits';
-import { SegmentTraits } from '../../../panel2-multitabs/types/Segment/SegmentTraits';
 
 interface OwnProps {
   // Props passed directly to the component
@@ -22,31 +19,8 @@ const EnhancedResponse: React.FunctionComponent<Props> = ({ task }) => {
 
   const [loading, setLoading] = useState(false);
   const [persona, setAiPersona] = useState('corporate and concise');
-  const [traitsOn, setTraitsOn] = React.useState(false);
-  const [traits, setTraits] = useState<SegmentTraits>({});
 
   const currResponse = Flex.useFlexSelector((state) => state.flex.chat.conversationInput[conversationSid].inputText);
-
-  useEffect(() => {
-    SegmentService.fetchTraitsForUser(task?.attributes.email)
-      .then((userTraits) => setTraits(userTraits))
-      .catch((err) => console.error('AI Enhanced Responses - Error fetching user traits', err))
-      .finally(() => setLoading(false));
-  }, [task?.attributes.email]);
-
-  const getUserContext = (): string => {
-    let userContext: string = '';
-    if (traitsOn) {
-      KnownTraits.forEach((item) => {
-        if (traits && traits.hasOwnProperty(item.key)) {
-          userContext += '\n - ' + item.label + ' is ' + (traits as any)[item.key] + ' ';
-        }
-      });
-
-      if (userContext.length > 0) userContext.length + '\n';
-    }
-    return userContext;
-  };
 
   const rephraseResponse = () => {
     if (currResponse.trim().length == 0) {
@@ -55,7 +29,7 @@ const EnhancedResponse: React.FunctionComponent<Props> = ({ task }) => {
 
     setLoading(true);
 
-    AiResponsesService.getEnhancedResponseWithPersonaAndUserContext(currResponse, persona, getUserContext())
+    AiResponsesService.getEnhancedResponseWithPersonaAndUserContext(currResponse, persona, '')
       .then((response) => {
         if (!response || response === '') return;
 
@@ -91,11 +65,6 @@ const EnhancedResponse: React.FunctionComponent<Props> = ({ task }) => {
     <ResponseEnhancerWrapper>
       <PasteFlex hAlignContent="center" vAlignContent="center" padding="space10">
         {makeSelectBetter()}
-        <Switch name="useTraits" value="traits" checked={traitsOn} onChange={() => setTraitsOn(!traitsOn)}>
-          <Text as={'p'} fontSize="fontSize20">
-            Traits
-          </Text>
-        </Switch>
         <Button onClick={rephraseResponse} size="circle" variant="secondary_icon" loading={loading}>
           <NewIcon decorative={false} title="Rephrase" />
         </Button>
