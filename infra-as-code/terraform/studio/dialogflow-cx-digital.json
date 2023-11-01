@@ -1,0 +1,430 @@
+{
+    "description": "Dialogflow CX Sample",
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "event": "incomingMessage"
+          },
+          {
+            "event": "incomingCall"
+          },
+          {
+            "next": "SetDFVariables",
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      },
+      {
+        "name": "SetUtteranceVariable",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "DetectLanguage",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "value": "{{trigger.conversation.Body}}",
+              "key": "utterance"
+            }
+          ],
+          "offset": {
+            "x": -130,
+            "y": 410
+          }
+        }
+      },
+      {
+        "name": "DialogflowDetectIntent",
+        "type": "run-function",
+        "transitions": [
+          {
+            "next": "SetBotResponseVariables",
+            "event": "success"
+          },
+          {
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": "ZSac31cee2bad99466290a38ae2a51a53c",
+          "environment_sid": "ZE7033618c61e535299d5bb771186440c1",
+          "offset": {
+            "x": -130,
+            "y": 1120
+          },
+          "function_sid": "ZHe324532621b659f4d243d5fec8cb74e1",
+          "parameters": [
+            {
+              "value": "{{flow.variables.utterance}}",
+              "key": "utterance"
+            },
+            {
+              "value": "{{trigger.conversation.ConversationSid}}",
+              "key": "dialogflow_cx_session_id"
+            },
+            {
+              "value": "{{flow.variables.DF_CX_PROJECT_ID}}",
+              "key": "dialogflow_cx_project_id"
+            },
+            {
+              "value": "{{flow.variables.DF_CX_LOCATION}}",
+              "key": "dialogflow_cx_location"
+            },
+            {
+              "value": "{{flow.variables.DF_CX_AGENT_ID}}",
+              "key": "dialogflow_cx_agent_id"
+            },
+            {
+              "value": "{{flow.variables.DF_CX_LANGUAGE_CODE}}",
+              "key": "dialogflow_cx_language_code"
+            }
+          ],
+          "url": "https://twilio-flex-dialogflow-digital-5054-dev.twil.io/detect-intent"
+        }
+      },
+      {
+        "name": "SendDialogflowAnswerAndWaitForReply",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "next": "ResetUtteranceVariable",
+            "event": "incomingMessage"
+          },
+          {
+            "event": "timeout"
+          },
+          {
+            "event": "deliveryFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -620,
+            "y": 2280
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.variables.DF_CX_BOT_NAME}}",
+          "attributes": "{{flow.variables.customAttributes}}",
+          "body": "{{flow.variables.botResponse | strip_newlines | strip }}",
+          "timeout": "3600"
+        }
+      },
+      {
+        "name": "SendToFlexAgent",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 350,
+            "y": 2250
+          },
+          "workflow": "WW9fab78e287a1c330ee6bc8a585091858",
+          "channel": "TCec141aeca553ecfbc7053048463b0944",
+          "attributes": "{\"name\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.friendlyName}}\"}"
+        }
+      },
+      {
+        "name": "WantsAgent",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "WantsToEndSession",
+            "event": "noMatch"
+          },
+          {
+            "next": "SendConnectingToAgent",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "Wants Agent",
+                "arguments": [
+                  "{{widgets.DialogflowDetectIntent.parsed.intent.displayName}}"
+                ],
+                "type": "equal_to",
+                "value": "Talk to Agent"
+              }
+            ]
+          },
+          {
+            "next": "SendConnectingToAgent",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "Wants Agent 2",
+                "arguments": [
+                  "{{widgets.DialogflowDetectIntent.parsed.intent.displayName}}"
+                ],
+                "type": "equal_to",
+                "value": "small_talk.agent_hand_off"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.DialogflowDetectIntent.parsed.intent.displayName}}",
+          "offset": {
+            "x": -180,
+            "y": 1630
+          }
+        }
+      },
+      {
+        "name": "ResetUtteranceVariable",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "DialogflowDetectIntent",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "value": "{{widgets.SendDialogflowAnswerAndWaitForReply.inbound.Body}}",
+              "key": "utterance"
+            }
+          ],
+          "offset": {
+            "x": -1120,
+            "y": 840
+          }
+        }
+      },
+      {
+        "name": "WantsToEndSession",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "next": "SendDialogflowAnswerAndWaitForReply",
+            "event": "noMatch"
+          },
+          {
+            "next": "SendFinalMessage",
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "End Session",
+                "arguments": [
+                  "{{widgets.DialogflowDetectIntent.parsed.currentPage.displayName}}"
+                ],
+                "type": "equal_to",
+                "value": "End Session"
+              }
+            ]
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.DialogflowDetectIntent.parsed.currentPage.displayName}}",
+          "offset": {
+            "x": -460,
+            "y": 1940
+          }
+        }
+      },
+      {
+        "name": "SendFinalMessage",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -110,
+            "y": 2270
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.variables.DF_CX_BOT_NAME}}",
+          "attributes": "{{flow.variables.customAttributes}}",
+          "to": "{{contact.channel.address}}",
+          "body": "{{flow.variables.botResponse | strip_newlines | strip }}"
+        }
+      },
+      {
+        "name": "SendConnectingToAgent",
+        "type": "send-message",
+        "transitions": [
+          {
+            "next": "SendToFlexAgent",
+            "event": "sent"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 340,
+            "y": 1930
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "{{flow.variables.DF_CX_BOT_NAME}}",
+          "attributes": "{{flow.variables.customAttributes}}",
+          "to": "{{contact.channel.address}}",
+          "body": "{{flow.variables.botResponse | strip_newlines | strip }}"
+        }
+      },
+      {
+        "name": "SetDFVariables",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "SetUtteranceVariable",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "value": "leroy-chan",
+              "key": "DF_CX_PROJECT_ID"
+            },
+            {
+              "value": "us-central1",
+              "key": "DF_CX_LOCATION"
+            },
+            {
+              "value": "175092e5-f43b-4758-8c3e-b841c3ae212a",
+              "key": "DF_CX_AGENT_ID"
+            },
+            {
+              "value": "en",
+              "key": "DF_CX_LANGUAGE_CODE"
+            },
+            {
+              "value": "Melvis",
+              "key": "DF_CX_BOT_NAME"
+            }
+          ],
+          "offset": {
+            "x": -130,
+            "y": 230
+          }
+        }
+      },
+      {
+        "name": "SetBotResponseVariables",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "WantsAgent",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "value": "{% for responseMessage in widgets.DialogflowDetectIntent.parsed.responseMessages %}\n{% if responseMessage.message == 'text' %}\n{% assign botResponse = responseMessage.text.text %}\n{{ botResponse | strip_newlines | strip }}\n{% endif %}\n{% endfor %}",
+              "key": "botResponse"
+            },
+            {
+              "value": "{% assign flag = false %}\n{% for responseMessage in widgets.DialogflowDetectIntent.parsed.responseMessages %}\n{% if responseMessage.message == \"payload\" %}\n{% assign flag = true %}\n{ \"adaptive-card\": {{ responseMessage.payload | to_json }}}\n{% endif %}\n{% endfor %}\n{% if flag == false %}\n{}\n{% endif %}",
+              "key": "customAttributes"
+            }
+          ],
+          "offset": {
+            "x": -140,
+            "y": 1360
+          }
+        }
+      },
+      {
+        "name": "DetectLanguage",
+        "type": "run-function",
+        "transitions": [
+          {
+            "next": "ResetLanguageCode",
+            "event": "success"
+          },
+          {
+            "event": "fail"
+          }
+        ],
+        "properties": {
+          "service_sid": "ZSac31cee2bad99466290a38ae2a51a53c",
+          "environment_sid": "ZE7033618c61e535299d5bb771186440c1",
+          "offset": {
+            "x": -130,
+            "y": 590
+          },
+          "function_sid": "ZH88d743db3773cd33c5a6344e31e60cfa",
+          "parameters": [
+            {
+              "value": "{{flow.variables.utterance}}",
+              "key": "text"
+            },
+            {
+              "value": "{{flow.variables.DF_CX_PROJECT_ID}}",
+              "key": "dialogflow_cx_project_id"
+            },
+            {
+              "value": "{{flow.variables.DF_CX_LOCATION}}",
+              "key": "dialogflow_cx_location"
+            }
+          ],
+          "url": "https://twilio-flex-dialogflow-digital-5054-dev.twil.io/detect-language"
+        }
+      },
+      {
+        "name": "ResetLanguageCode",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "next": "DialogflowDetectIntent",
+            "event": "next"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "value": "{{widgets.DetectLanguage.parsed.languageCode}}",
+              "key": "DF_CX_LANGUAGE_CODE"
+            }
+          ],
+          "offset": {
+            "x": -140,
+            "y": 830
+          }
+        }
+      }
+    ],
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    }
+  }
