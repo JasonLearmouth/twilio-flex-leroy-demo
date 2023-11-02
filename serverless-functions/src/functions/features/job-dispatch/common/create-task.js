@@ -21,6 +21,8 @@ exports.handler = prepareStudioFunction(requiredParameters, async (context, even
     } = event;
 
     const parsedJsonAttributes = JSON.parse(jsonAttributes);
+    const parsedRawAttributes = JSON.parse(parsedJsonAttributes.raw);
+    const parsedPreEngagementData = JSON.parse(parsedJsonAttributes.pre_engagement_data);
 
     // use assigned values or use defaults
     const workflowSid = overriddenWorkflowSid || context.TWILIO_FLEX_JOB_DISPATCH_WORKFLOW_SID;
@@ -28,19 +30,15 @@ exports.handler = prepareStudioFunction(requiredParameters, async (context, even
     const priority = overriddenPriority || 0;
 
     let newAttributes;
-    if (
-      parsedJsonAttributes.raw.taskType &&
-      parsedJsonAttributes.raw.taskCategory &&
-      parsedJsonAttributes.pre_engagement_data.friendly_name
-    ) {
-      let taskName = `Job Dispatch (${parsedJsonAttributes.raw.taskCategory}): ${parsedJsonAttributes.pre_engagement_data.friendly_name}`;
+    if (parsedRawAttributes.taskType && parsedRawAttributes.taskCategory && parsedPreEngagementData.friendly_name) {
+      let taskName = `Job Dispatch (${parsedRawAttributes.taskCategory}): ${parsedPreEngagementData.friendly_name}`;
       newAttributes = {
         name: taskName,
-        ...parsedJsonAttributes.raw,
+        ...parsedRawAttributes,
       };
     } else {
       newAttributes = {
-        ...parsedJsonAttributes.raw,
+        ...parsedRawAttributes,
       };
     }
     const result = await TaskOperations.createTask({
