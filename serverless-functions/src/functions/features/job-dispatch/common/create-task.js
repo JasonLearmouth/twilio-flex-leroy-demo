@@ -12,7 +12,7 @@ const requiredParameters = [
 
 exports.handler = prepareStudioFunction(requiredParameters, async (context, event, callback, response, handleError) => {
   try {
-    console.log(event);
+    console.log('1.', event);
     const {
       jsonAttributes,
       workflowSid: overriddenWorkflowSid,
@@ -21,9 +21,11 @@ exports.handler = prepareStudioFunction(requiredParameters, async (context, even
     } = event;
 
     const parsedJsonAttributes = JSON.parse(jsonAttributes);
+    console.log('2.', parsedJsonAttributes);
     const parsedRawAttributes = JSON.parse(parsedJsonAttributes.raw);
+    console.log('3.', parsedRawAttributes);
     const parsedPreEngagementData = JSON.parse(parsedJsonAttributes.pre_engagement_data);
-
+    console.log('3.', parsedPreEngagementData);
     // use assigned values or use defaults
     const workflowSid = overriddenWorkflowSid || context.TWILIO_FLEX_JOB_DISPATCH_WORKFLOW_SID;
     const timeout = overriddenTimeout || 86400;
