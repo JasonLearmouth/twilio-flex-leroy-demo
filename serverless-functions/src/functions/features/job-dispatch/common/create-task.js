@@ -12,12 +12,15 @@ const requiredParameters = [
 
 exports.handler = prepareStudioFunction(requiredParameters, async (context, event, callback, response, handleError) => {
   try {
+    console.log(event);
     const {
       jsonAttributes,
       workflowSid: overriddenWorkflowSid,
       timeout: overriddenTimeout,
       priority: overriddenPriority,
     } = event;
+
+    const parsedJsonAttributes = JSON.parse(jsonAttributes);
 
     // use assigned values or use defaults
     const workflowSid = overriddenWorkflowSid || context.TWILIO_FLEX_JOB_DISPATCH_WORKFLOW_SID;
@@ -26,18 +29,18 @@ exports.handler = prepareStudioFunction(requiredParameters, async (context, even
 
     let newAttributes;
     if (
-      jsonAttributes.raw.taskType &&
-      jsonAttributes.raw.taskCategory &&
-      jsonAttributes.pre_engagement_data.friendly_name
+      parsedJsonAttributes.raw.taskType &&
+      parsedJsonAttributes.raw.taskCategory &&
+      parsedJsonAttributes.pre_engagement_data.friendly_name
     ) {
-      let taskName = `Job Dispatch (${jsonAttributes.raw.taskCategory}): ${jsonAttributes.pre_engagement_data.friendly_name}`;
+      let taskName = `Job Dispatch (${parsedJsonAttributes.raw.taskCategory}): ${parsedJsonAttributes.pre_engagement_data.friendly_name}`;
       newAttributes = {
         name: taskName,
-        ...jsonAttributes.raw,
+        ...parsedJsonAttributes.raw,
       };
     } else {
       newAttributes = {
-        ...jsonAttributes.raw,
+        ...parsedJsonAttributes.raw,
       };
     }
     const result = await TaskOperations.createTask({
