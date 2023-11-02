@@ -25,15 +25,19 @@ exports.handler = prepareStudioFunction(requiredParameters, async (context, even
     const priority = overriddenPriority || 0;
 
     let newAttributes;
-    if (jsonAttributes.taskType && jsonAttributes.taskCategory && jsonAttributes.pre_engagement_data.friendly_name) {
-      let taskName = `Job Dispatch (${jsonAttributes.taskCategory}): ${jsonAttributes.pre_engagement_data.friendly_name}`;
+    if (
+      jsonAttributes.raw.taskType &&
+      jsonAttributes.raw.taskCategory &&
+      jsonAttributes.pre_engagement_data.friendly_name
+    ) {
+      let taskName = `Job Dispatch (${jsonAttributes.raw.taskCategory}): ${jsonAttributes.pre_engagement_data.friendly_name}`;
       newAttributes = {
         name: taskName,
-        ...jsonAttributes,
+        ...jsonAttributes.raw,
       };
     } else {
       newAttributes = {
-        ...jsonAttributes,
+        ...jsonAttributes.raw,
       };
     }
     const result = await TaskOperations.createTask({
