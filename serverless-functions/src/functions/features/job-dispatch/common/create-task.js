@@ -12,7 +12,7 @@ const requiredParameters = [
 
 exports.handler = prepareStudioFunction(requiredParameters, async (context, event, callback, response, handleError) => {
   try {
-    console.log('1.', event);
+    console.log('Incoming Event:', event);
     const {
       jsonAttributes,
       workflowSid: overriddenWorkflowSid,
@@ -21,22 +21,28 @@ exports.handler = prepareStudioFunction(requiredParameters, async (context, even
     } = event;
 
     const parsedJsonAttributes = JSON.parse(jsonAttributes);
-    console.log('2.', parsedJsonAttributes);
+    console.log('Parsed JSON Attributes: ', parsedJsonAttributes);
     const parsedRawAttributes = JSON.parse(parsedJsonAttributes.raw);
-    console.log('3.', parsedRawAttributes);
-    const parsedPreEngagementData = JSON.parse(parsedJsonAttributes.pre_engagement_data);
-    console.log('3.', parsedPreEngagementData);
+    console.log('Parsed Raw Attributes', parsedRawAttributes);
+
     // use assigned values or use defaults
     const workflowSid = overriddenWorkflowSid || context.TWILIO_FLEX_JOB_DISPATCH_WORKFLOW_SID;
     const timeout = overriddenTimeout || 86400;
     const priority = overriddenPriority || 0;
 
     let newAttributes;
-    if (parsedRawAttributes.taskType && parsedRawAttributes.taskCategory && parsedPreEngagementData.friendly_name) {
-      let taskName = `Job Dispatch (${parsedRawAttributes.taskCategory}): ${parsedPreEngagementData.friendly_name}`;
+    if (
+      parsedRawAttributes.taskType &&
+      parsedRawAttributes.taskCategory &&
+      parsedJsonAttributes.pre_engagement_data.friendly_name
+    ) {
+      let taskName = `Job Dispatch (${parsedRawAttributes.taskCategory}): ${parsedJsonAttributes.pre_engagement_data.friendly_name}`;
       newAttributes = {
         name: taskName,
         ...parsedRawAttributes,
+        pre_engagement_data: {
+          ...parsedJsonAttributes.pre_engagement_data,
+        },
       };
     } else {
       newAttributes = {
