@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Text,
@@ -23,8 +23,24 @@ import { ThumbsUpIcon } from '@twilio-paste/icons/esm/ThumbsUpIcon';
 import { BusinessIcon } from '@twilio-paste/icons/esm/BusinessIcon';
 import { CommunityIcon } from '@twilio-paste/icons/esm/CommunityIcon';
 import { StarIcon } from '@twilio-paste/icons/esm/StarIcon';
+import * as Flex from '@twilio/flex-ui';
 
-const FauxCustomerInfo = () => {
+interface Props {
+  task?: Flex.ITask;
+}
+
+const FauxCustomerInfo = ({ task }: Props) => {
+  const [customerName, setCustomerName] = useState<string>('John Tan');
+
+  useEffect(() => {
+    console.log('---');
+    console.log(task);
+    if (task?.attributes?.pre_engagement_data?.friendly_name) {
+      setCustomerName(task?.attributes?.pre_engagement_data?.friendly_name);
+    } else if (task?.attributes?.name) {
+      setCustomerName(task?.attributes?.name);
+    }
+  }, [task?.taskSid]);
   return (
     <Card>
       <Stack orientation={'vertical'} spacing={'space40'}>
@@ -34,7 +50,7 @@ const FauxCustomerInfo = () => {
           </MediaFigure>
           <MediaBody as="div">
             <Text as="h2" variant="heading50" fontSize={'fontSize60'} fontWeight="fontWeightBold">
-              John Tan
+              {customerName}
             </Text>
           </MediaBody>
         </MediaObject>
@@ -110,4 +126,4 @@ const FauxCustomerInfo = () => {
   );
 };
 
-export default FauxCustomerInfo;
+export default Flex.withTaskContext(React.memo(FauxCustomerInfo));
