@@ -34,7 +34,8 @@ exports.handler = prepareStudioFunction(requiredParameters, async (context, even
     if (
       parsedRawAttributes.taskType &&
       parsedRawAttributes.taskCategory &&
-      parsedJsonAttributes.pre_engagement_data.friendly_name
+      parsedJsonAttributes.pre_engagement_data.friendly_name &&
+      parsedJsonAttributes.conversationSid
     ) {
       let taskName = `Job Dispatch (${parsedRawAttributes.taskCategory}): ${parsedJsonAttributes.pre_engagement_data.friendly_name}`;
       newAttributes = {
@@ -43,6 +44,7 @@ exports.handler = prepareStudioFunction(requiredParameters, async (context, even
         pre_engagement_data: {
           ...parsedJsonAttributes.pre_engagement_data,
         },
+        conversationSid: parsedJsonAttributes.conversationSid,
       };
     } else {
       newAttributes = {
