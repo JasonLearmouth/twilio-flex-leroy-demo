@@ -24,6 +24,7 @@ import React, { useEffect, useState } from 'react';
 import { NotesIcon } from '@twilio-paste/icons/esm/NotesIcon';
 
 import FauxLocationDetails from './FauxLocationDetails';
+import JobDispatchService from '../../utils/JobDispatchService';
 
 interface Props {
   task?: Flex.ITask;
@@ -31,6 +32,7 @@ interface Props {
 
 const FauxJobDetails = ({ task }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [dispatchButtonLoading, setDispatchButtonLoading] = useState<boolean>(false);
   const [jobDetails, setJobDetails] = useState<any>();
   const [jobAttributes, setJobAttributes] = useState<any>();
   const [jobID, setJobID] = useState<String>();
@@ -44,6 +46,19 @@ const FauxJobDetails = ({ task }: Props) => {
     }
   }, [task?.taskSid]);
 
+  const sendDispatchMessage = () => {
+    setDispatchButtonLoading(true);
+    const jobDetails = {
+      jobId: jobID,
+      jobCategory: task?.attributes.taskCategory,
+      status: 'Pending',
+      estimatedCompletion: '3 Minutes',
+    };
+    JobDispatchService.sendDispatchMessage(task?.attributes?.dispatchTaskConversationSid, jobDetails)
+      .then((response) => {})
+      .catch((err) => console.error('Error sending dispatch message', err))
+      .finally(() => setDispatchButtonLoading(false));
+  };
   const formulateJobAttributes = (task: Flex.ITask) => {
     if (task.attributes?.taskType === 'dispatch_job') {
       const attributes = task.attributes;
@@ -140,6 +155,9 @@ const FauxJobDetails = ({ task }: Props) => {
                 })}
               </TBody>
             </Table>
+            <Button onClick={sendDispatchMessage} variant="primary" loading={dispatchButtonLoading}>
+              Pending
+            </Button>
             {(task?.attributes.taskCategory === 'room_service' ||
               task?.attributes.taskCategory === 'request_amenities') && <FauxLocationDetails />}
           </>
