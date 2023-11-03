@@ -17,7 +17,7 @@ exports.handler = prepareFlexFunction(requiredParameters, async (context, event,
   const { conversationSid, jobDetails } = event;
   const messageAuthor = 'Job Dispatch System';
 
-  if (!language || !messages) {
+  if (!conversationSid || !jobDetails) {
     throw new Error('Missing conversationSid or jobDetails parameters.');
   }
 
