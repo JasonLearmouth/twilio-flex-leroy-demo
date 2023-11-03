@@ -14,6 +14,7 @@ import {
   THead,
   Tr,
   Button,
+  ButtonGroup,
   Heading,
   SkeletonLoader,
 } from '@twilio-paste/core';
@@ -22,8 +23,12 @@ import * as Flex from '@twilio/flex-ui';
 import React, { useEffect, useState } from 'react';
 
 import { NotesIcon } from '@twilio-paste/icons/esm/NotesIcon';
+import { ProcessInProgressIcon } from '@twilio-paste/icons/esm/ProcessInProgressIcon';
+import { ThumbsUpIcon } from '@twilio-paste/icons/esm/ThumbsUpIcon';
+import { NotificationIcon } from '@twilio-paste/icons/esm/NotificationIcon';
 
 import FauxLocationDetails from './FauxLocationDetails';
+import FauxRestaurantReservationSystem from './FauxRestaurantReservationSystem';
 import JobDispatchService from '../../utils/JobDispatchService';
 
 interface Props {
@@ -46,13 +51,13 @@ const FauxJobDetails = ({ task }: Props) => {
     }
   }, [task?.taskSid]);
 
-  const sendDispatchMessage = () => {
+  const sendDispatchMessage = (status: string, estimatedCompletion: string) => {
     setDispatchButtonLoading(true);
     const jobDetails = {
       jobId: jobID,
       jobCategory: task?.attributes.taskCategory,
-      status: 'Pending',
-      estimatedCompletion: '3 Minutes',
+      status,
+      estimatedCompletion,
     };
     JobDispatchService.sendDispatchMessage(task?.attributes?.dispatchTaskConversationSid, jobDetails)
       .then((response) => {})
@@ -155,11 +160,48 @@ const FauxJobDetails = ({ task }: Props) => {
                 })}
               </TBody>
             </Table>
-            <Button onClick={sendDispatchMessage} variant="primary" loading={dispatchButtonLoading}>
-              Pending
-            </Button>
             {(task?.attributes.taskCategory === 'room_service' ||
               task?.attributes.taskCategory === 'request_amenities') && <FauxLocationDetails />}
+            {task?.attributes.taskCategory === 'restaurant_reservation' && <FauxRestaurantReservationSystem />}
+            <Separator orientation="horizontal" verticalSpacing="space80" />
+            <MediaObject verticalAlign="center" marginBottom="space40">
+              <MediaFigure spacing="space40">
+                <NotificationIcon decorative={true} about="Notify Customer" size="sizeIcon60" />
+              </MediaFigure>
+              <MediaBody>
+                <Text as="h2" fontSize="fontSize60" lineHeight="lineHeight60">
+                  <Text as="span" color="inherit" fontSize="inherit" lineHeight="inherit">
+                    Notify Customer
+                  </Text>
+                </Text>
+                <Text as="h3" fontSize="fontSize20" lineHeight="lineHeight20" color="colorTextWeak">
+                  Keep customer up to date!
+                </Text>
+              </MediaBody>
+            </MediaObject>
+            <ButtonGroup attached>
+              <Button
+                onClick={() =>
+                  sendDispatchMessage(
+                    'Pending',
+                    'It will take an approximate 15 minutes for your request to be completed.',
+                  )
+                }
+                loading={dispatchButtonLoading}
+                variant="secondary"
+              >
+                <ProcessInProgressIcon decorative />
+                Start Job
+              </Button>
+              <Button
+                onClick={() => sendDispatchMessage('Completed', 'Your request has successfully been completed!')}
+                loading={dispatchButtonLoading}
+                variant="secondary"
+              >
+                <ThumbsUpIcon decorative />
+                Complete Job
+              </Button>
+            </ButtonGroup>
           </>
         )}
       </Stack>

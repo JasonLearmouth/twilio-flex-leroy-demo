@@ -15,6 +15,7 @@ const requiredParameters = [
 
 exports.handler = prepareFlexFunction(requiredParameters, async (context, event, callback, response, handleError) => {
   const { conversationSid, jobDetails } = event;
+  const parsedJobDetails = JSON.parse(jobDetails);
   const messageAuthor = 'Job Dispatch System';
 
   if (!conversationSid || !jobDetails) {
@@ -24,148 +25,74 @@ exports.handler = prepareFlexFunction(requiredParameters, async (context, event,
   try {
     const client = context.getTwilioClient();
     const adaptiveCard = {
-      type: 'AdaptiveCard',
       $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
-      version: '1.5',
+      type: 'AdaptiveCard',
+      version: '1.6',
       body: [
         {
-          type: 'TextBlock',
-          text: 'Your Dispatch Job',
-          wrap: true,
-          style: 'heading',
-        },
-        {
-          type: 'Table',
+          type: 'ColumnSet',
           columns: [
             {
-              width: 1,
-            },
-            {
-              width: 1,
-            },
-            {
-              width: 1,
-            },
-          ],
-          rows: [
-            {
-              type: 'TableRow',
-              cells: [
+              type: 'Column',
+              width: 2,
+              items: [
                 {
-                  type: 'TableCell',
-                  items: [
-                    {
-                      type: 'Image',
-                      size: 'Large',
-                      url: 'https://upload.wikimedia.org/wikipedia/en/7/70/Melco_logo.png',
-                      altText: 'Melco',
-                    },
-                  ],
+                  type: 'Image',
+                  url: 'https://media.licdn.com/dms/image/C510BAQErY9t7As0Caw/company-logo_200_200/0/1519940197221?e=2147483647&v=beta&t=pgC0oReeN2PfhqyUyNjGk6R9CV3x7-PmXilzKd__DMQ',
+                  altText: 'Melco',
+                  size: 'small',
                 },
                 {
-                  type: 'TableCell',
+                  type: 'TextBlock',
+                  text: 'Your Request',
+                  weight: 'bolder',
+                  size: 'extraLarge',
+                  spacing: 'none',
+                  wrap: true,
+                  style: 'heading',
                 },
                 {
-                  type: 'TableCell',
-                  items: [
-                    {
-                      type: 'TextBlock',
-                      text: 'Status',
-                      horizontalAlignment: 'Right',
-                      isSubtle: true,
-                      wrap: true,
-                    },
-                    {
-                      type: 'TextBlock',
-                      text: jobDetails.status,
-                      horizontalAlignment: 'Right',
-                      spacing: 'None',
-                      size: 'Large',
-                      color: 'Good',
-                      wrap: true,
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              type: 'TableRow',
-              cells: [
-                {
-                  type: 'TableCell',
-                  items: [
-                    {
-                      type: 'TextBlock',
-                      text: 'Job ID',
-                      isSubtle: true,
-                      weight: 'Bolder',
-                      wrap: true,
-                    },
-                    {
-                      type: 'TextBlock',
-                      text: jobDetails.jobId,
-                      spacing: 'Small',
-                      wrap: true,
-                    },
-                  ],
+                  type: 'TextBlock',
+                  text: parsedJobDetails.status,
+                  weight: 'bold',
+                  size: 'large',
+                  color: 'good',
+                  wrap: true,
+                  spacing: 'none',
                 },
                 {
-                  type: 'TableCell',
-                  items: [
-                    {
-                      type: 'TextBlock',
-                      text: 'Type',
-                      isSubtle: true,
-                      horizontalAlignment: 'Center',
-                      weight: 'Bolder',
-                      wrap: true,
-                    },
-                    {
-                      type: 'TextBlock',
-                      text: jobDetails.jobCategory,
-                      color: 'Default',
-                      weight: 'Bolder',
-                      horizontalAlignment: 'Center',
-                      spacing: 'Small',
-                      wrap: true,
-                    },
-                  ],
+                  type: 'TextBlock',
+                  text: `Job ID: ${parsedJobDetails.jobId}`,
+                  isSubtle: true,
+                  spacing: 'none',
+                  wrap: true,
                 },
                 {
-                  type: 'TableCell',
-                  items: [
-                    {
-                      type: 'TextBlock',
-                      text: 'Estimated Completion',
-                      isSubtle: true,
-                      horizontalAlignment: 'Right',
-                      weight: 'Bolder',
-                      wrap: true,
-                    },
-                    {
-                      type: 'TextBlock',
-                      text: jobDetails.estimatedCompletion,
-                      color: 'Default',
-                      horizontalAlignment: 'Right',
-                      weight: 'Bolder',
-                      spacing: 'Small',
-                      wrap: true,
-                    },
-                  ],
+                  type: 'TextBlock',
+                  text: `Job Category: ${parsedJobDetails.jobCategory}`,
+                  isSubtle: true,
+                  spacing: 'none',
+                  wrap: true,
+                },
+                {
+                  type: 'TextBlock',
+                  text: `${parsedJobDetails.estimatedCompletion}`,
+                  size: 'small',
+                  wrap: true,
+                  maxLines: 3,
                 },
               ],
             },
           ],
-          showGridLines: false,
         },
       ],
     };
     const result = await client.conversations.v1.conversations(conversationSid).messages.create({
       author: messageAuthor,
-      body: 'Job Dispatch Status',
-      attributes: {
+      body: 'Here is the latest update on your request:',
+      attributes: JSON.stringify({
         'adaptive-card': adaptiveCard,
-      },
+      }),
     });
     response.setBody(result);
     return callback(null, response);
