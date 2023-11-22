@@ -1,0 +1,81 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.5",
+    "body": [
+      {
+        "type": "TextBlock",
+        "text": "Schedule Appointment with Wealth Advisor",
+        "weight": "bolder",
+        "size": "medium",
+        "wrap": true,
+        "style": "heading"
+      },
+      {
+        "type": "TextBlock",
+        "text": "Select a date to fix an appointment with your dedicated banking advisor Shivram Chandrasekhar.",
+        "wrap": true
+      },
+      {
+        "type": "FactSet",
+        "facts": [
+          {
+            "title": "Customer Name:",
+            "value": "Jamie Reyes"
+          },
+          {
+            "title": "Assigned to:",
+            "value": "Shivram Chandrasekhar"
+          },
+          {
+            "title": "Agenda:",
+            "value": "Investment Options"
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "type": "Action.ShowCard",
+        "title": "Select Date",
+        "card": {
+          "type": "AdaptiveCard",
+          "body": [
+            {
+              "type": "Input.Date",
+              "label": "Select a date for your appointment",
+              "id": "dueDate"
+            }
+          ],
+          "actions": [
+            {
+              "type": "Action.Submit",
+              "title": "Send"
+            }
+          ]
+        }
+      },
+      {
+        "type": "Action.ShowCard",
+        "title": "Comment",
+        "card": {
+          "type": "AdaptiveCard",
+          "body": [
+            {
+              "type": "Input.Text",
+              "id": "comment",
+              "isMultiline": true,
+              "label": "Add a comment"
+            }
+          ],
+          "actions": [
+            {
+              "type": "Action.Submit",
+              "title": "OK"
+            }
+          ]
+        }
+      }
+    ]
+  }
+  
