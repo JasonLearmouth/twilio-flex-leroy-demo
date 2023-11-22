@@ -81,6 +81,16 @@
     "file": "agenda.json"
   },
   {
+    "label": "Card Offer (Metrobank)",
+    "text": "Credit card limit to ₱200,000 for credit cards with a limit of less than ₱300,000",
+    "file": "metrobank_card_offer.json"
+  },
+  {
+    "label": "Schedule an Appointment (Metrobank)",
+    "text": "Invite the customer to schedule an appointment with wealth advisor",
+    "file": "metrobank_appointment.json"
+  },
+  {
     "label": "PCI Payment Form",
     "text": "Secure form to take payment from a customer"
   },

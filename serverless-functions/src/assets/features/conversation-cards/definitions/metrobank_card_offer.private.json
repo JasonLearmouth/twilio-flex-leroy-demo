@@ -45,7 +45,7 @@
             "items": [
               {
                 "type": "TextBlock",
-                "text": "Yes! Please upgrade my Metrobank Platinum credit card from it's existing limit of $4,900 to $7,000",
+                "text": "Yes! Please upgrade my Metrobank Platinum credit card from its existing limit of ₱200,000 to ₱300,000",
                 "size": "Small",
                 "wrap": true,
                 "maxLines": 3
