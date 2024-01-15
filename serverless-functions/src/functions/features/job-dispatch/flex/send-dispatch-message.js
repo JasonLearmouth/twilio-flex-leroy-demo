@@ -37,12 +37,6 @@ exports.handler = prepareFlexFunction(requiredParameters, async (context, event,
               width: 2,
               items: [
                 {
-                  type: 'Image',
-                  url: 'https://media.licdn.com/dms/image/C510BAQErY9t7As0Caw/company-logo_200_200/0/1519940197221?e=2147483647&v=beta&t=pgC0oReeN2PfhqyUyNjGk6R9CV3x7-PmXilzKd__DMQ',
-                  altText: 'Melco',
-                  size: 'small',
-                },
-                {
                   type: 'TextBlock',
                   text: 'Your Request',
                   weight: 'bolder',
